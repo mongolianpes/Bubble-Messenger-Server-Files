@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package files;
+
+option go_package = ".";
+
+message DownloadFileRequest {
+  bytes file = 1;
+}
+
+message DownloadFileResponse {
+  string storage_path = 1;
+}
+
+service FilesService {
+  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+}
