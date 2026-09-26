@@ -21,27 +21,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type DownloadFileRequest struct {
+type SaveFileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	File          []byte                 `protobuf:"bytes,1,opt,name=file,proto3" json:"file,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DownloadFileRequest) Reset() {
-	*x = DownloadFileRequest{}
+func (x *SaveFileRequest) Reset() {
+	*x = SaveFileRequest{}
 	mi := &file_files_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DownloadFileRequest) String() string {
+func (x *SaveFileRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DownloadFileRequest) ProtoMessage() {}
+func (*SaveFileRequest) ProtoMessage() {}
 
-func (x *DownloadFileRequest) ProtoReflect() protoreflect.Message {
+func (x *SaveFileRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_files_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -53,39 +53,39 @@ func (x *DownloadFileRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DownloadFileRequest.ProtoReflect.Descriptor instead.
-func (*DownloadFileRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SaveFileRequest.ProtoReflect.Descriptor instead.
+func (*SaveFileRequest) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DownloadFileRequest) GetFile() []byte {
+func (x *SaveFileRequest) GetFile() []byte {
 	if x != nil {
 		return x.File
 	}
 	return nil
 }
 
-type DownloadFileResponse struct {
+type SaveFileResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	StoragePath   string                 `protobuf:"bytes,1,opt,name=storage_path,json=storagePath,proto3" json:"storage_path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DownloadFileResponse) Reset() {
-	*x = DownloadFileResponse{}
+func (x *SaveFileResponse) Reset() {
+	*x = SaveFileResponse{}
 	mi := &file_files_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DownloadFileResponse) String() string {
+func (x *SaveFileResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DownloadFileResponse) ProtoMessage() {}
+func (*SaveFileResponse) ProtoMessage() {}
 
-func (x *DownloadFileResponse) ProtoReflect() protoreflect.Message {
+func (x *SaveFileResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_files_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,114 +97,29 @@ func (x *DownloadFileResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DownloadFileResponse.ProtoReflect.Descriptor instead.
-func (*DownloadFileResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use SaveFileResponse.ProtoReflect.Descriptor instead.
+func (*SaveFileResponse) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DownloadFileResponse) GetStoragePath() string {
+func (x *SaveFileResponse) GetStoragePath() string {
 	if x != nil {
 		return x.StoragePath
 	}
 	return ""
-}
-
-type RemoveFileRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	StoragePath   string                 `protobuf:"bytes,1,opt,name=storage_path,json=storagePath,proto3" json:"storage_path,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RemoveFileRequest) Reset() {
-	*x = RemoveFileRequest{}
-	mi := &file_files_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RemoveFileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RemoveFileRequest) ProtoMessage() {}
-
-func (x *RemoveFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RemoveFileRequest.ProtoReflect.Descriptor instead.
-func (*RemoveFileRequest) Descriptor() ([]byte, []int) {
-	return file_files_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *RemoveFileRequest) GetStoragePath() string {
-	if x != nil {
-		return x.StoragePath
-	}
-	return ""
-}
-
-type RemoveFileResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RemoveFileResponse) Reset() {
-	*x = RemoveFileResponse{}
-	mi := &file_files_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RemoveFileResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RemoveFileResponse) ProtoMessage() {}
-
-func (x *RemoveFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RemoveFileResponse.ProtoReflect.Descriptor instead.
-func (*RemoveFileResponse) Descriptor() ([]byte, []int) {
-	return file_files_proto_rawDescGZIP(), []int{3}
 }
 
 var File_files_proto protoreflect.FileDescriptor
 
 const file_files_proto_rawDesc = "" +
 	"\n" +
-	"\vfiles.proto\x12\x05files\")\n" +
-	"\x13DownloadFileRequest\x12\x12\n" +
-	"\x04file\x18\x01 \x01(\fR\x04file\"9\n" +
-	"\x14DownloadFileResponse\x12!\n" +
-	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"6\n" +
-	"\x11RemoveFileRequest\x12!\n" +
-	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"\x14\n" +
-	"\x12RemoveFileResponse2\x9a\x01\n" +
-	"\fFilesService\x12G\n" +
-	"\fDownloadFile\x12\x1a.files.DownloadFileRequest\x1a\x1b.files.DownloadFileResponse\x12A\n" +
-	"\n" +
-	"RemoveFile\x12\x18.files.RemoveFileRequest\x1a\x19.files.RemoveFileResponseB\x03Z\x01.b\x06proto3"
+	"\vfiles.proto\x12\x05files\"%\n" +
+	"\x0fSaveFileRequest\x12\x12\n" +
+	"\x04file\x18\x01 \x01(\fR\x04file\"5\n" +
+	"\x10SaveFileResponse\x12!\n" +
+	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath2K\n" +
+	"\fFilesService\x12;\n" +
+	"\bSaveFile\x12\x16.files.SaveFileRequest\x1a\x17.files.SaveFileResponseB\x03Z\x01.b\x06proto3"
 
 var (
 	file_files_proto_rawDescOnce sync.Once
@@ -218,20 +133,16 @@ func file_files_proto_rawDescGZIP() []byte {
 	return file_files_proto_rawDescData
 }
 
-var file_files_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_files_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_files_proto_goTypes = []any{
-	(*DownloadFileRequest)(nil),  // 0: files.DownloadFileRequest
-	(*DownloadFileResponse)(nil), // 1: files.DownloadFileResponse
-	(*RemoveFileRequest)(nil),    // 2: files.RemoveFileRequest
-	(*RemoveFileResponse)(nil),   // 3: files.RemoveFileResponse
+	(*SaveFileRequest)(nil),  // 0: files.SaveFileRequest
+	(*SaveFileResponse)(nil), // 1: files.SaveFileResponse
 }
 var file_files_proto_depIdxs = []int32{
-	0, // 0: files.FilesService.DownloadFile:input_type -> files.DownloadFileRequest
-	2, // 1: files.FilesService.RemoveFile:input_type -> files.RemoveFileRequest
-	1, // 2: files.FilesService.DownloadFile:output_type -> files.DownloadFileResponse
-	3, // 3: files.FilesService.RemoveFile:output_type -> files.RemoveFileResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	0, // 0: files.FilesService.SaveFile:input_type -> files.SaveFileRequest
+	1, // 1: files.FilesService.SaveFile:output_type -> files.SaveFileResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -248,7 +159,7 @@ func file_files_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_files_proto_rawDesc), len(file_files_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

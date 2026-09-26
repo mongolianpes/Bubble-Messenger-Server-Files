@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	"files/internal/downloader"
+	"files/internal/saver"
 	"files/internal/storage"
 	"files/internal/uploader"
 	pb "files/proto"
@@ -13,16 +13,16 @@ import (
 )
 
 type FilesService struct {
-	uploader   uploader.Uploader
-	downloader downloader.Downloader
-	storage    storage.Cleaner
+	uploader uploader.Uploader
+	saver    saver.Saver
+	storage  storage.Cleaner
 }
 
 func NewFilesService() *FilesService {
 	return &FilesService{}
 }
 
-func (s *FilesService) StartDownloader() {
+func (s *FilesService) StartSaver() {
 	filesStorage := storage.NewStorage()
 	grpcServer := grpc.NewServer()
 
@@ -31,7 +31,7 @@ func (s *FilesService) StartDownloader() {
 		panic(err)
 	}
 
-	pb.RegisterFilesServiceServer(grpcServer, downloader.NewDonwloaderFilesService(filesStorage))
+	pb.RegisterFilesServiceServer(grpcServer, saver.NewSaveFilesService(filesStorage))
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}

@@ -4,14 +4,14 @@ package files;
 
 option go_package = ".";
 
-message DownloadFileRequest {
+message SaveFileRequest {
   bytes file = 1;
 }
 
-message DownloadFileResponse {
+message SaveFileResponse {
   string storage_path = 1;
 }
 
 service FilesService {
-  rpc DownloadFile(DownloadFileRequest) returns (DownloadFileResponse);
+  rpc SaveFile(SaveFileRequest) returns (SaveFileResponse);
 }

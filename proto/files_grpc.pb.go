@@ -19,16 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FilesService_DownloadFile_FullMethodName = "/files.FilesService/DownloadFile"
-	FilesService_RemoveFile_FullMethodName   = "/files.FilesService/RemoveFile"
+	FilesService_SaveFile_FullMethodName = "/files.FilesService/SaveFile"
 )
 
 // FilesServiceClient is the client API for FilesService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FilesServiceClient interface {
-	DownloadFile(ctx context.Context, in *DownloadFileRequest, opts ...grpc.CallOption) (*DownloadFileResponse, error)
-	RemoveFile(ctx context.Context, in *RemoveFileRequest, opts ...grpc.CallOption) (*RemoveFileResponse, error)
+	SaveFile(ctx context.Context, in *SaveFileRequest, opts ...grpc.CallOption) (*SaveFileResponse, error)
 }
 
 type filesServiceClient struct {
@@ -39,20 +37,10 @@ func NewFilesServiceClient(cc grpc.ClientConnInterface) FilesServiceClient {
 	return &filesServiceClient{cc}
 }
 
-func (c *filesServiceClient) DownloadFile(ctx context.Context, in *DownloadFileRequest, opts ...grpc.CallOption) (*DownloadFileResponse, error) {
+func (c *filesServiceClient) SaveFile(ctx context.Context, in *SaveFileRequest, opts ...grpc.CallOption) (*SaveFileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DownloadFileResponse)
-	err := c.cc.Invoke(ctx, FilesService_DownloadFile_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *filesServiceClient) RemoveFile(ctx context.Context, in *RemoveFileRequest, opts ...grpc.CallOption) (*RemoveFileResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RemoveFileResponse)
-	err := c.cc.Invoke(ctx, FilesService_RemoveFile_FullMethodName, in, out, cOpts...)
+	out := new(SaveFileResponse)
+	err := c.cc.Invoke(ctx, FilesService_SaveFile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +51,7 @@ func (c *filesServiceClient) RemoveFile(ctx context.Context, in *RemoveFileReque
 // All implementations must embed UnimplementedFilesServiceServer
 // for forward compatibility.
 type FilesServiceServer interface {
-	DownloadFile(context.Context, *DownloadFileRequest) (*DownloadFileResponse, error)
-	RemoveFile(context.Context, *RemoveFileRequest) (*RemoveFileResponse, error)
+	SaveFile(context.Context, *SaveFileRequest) (*SaveFileResponse, error)
 	mustEmbedUnimplementedFilesServiceServer()
 }
 
@@ -75,11 +62,8 @@ type FilesServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFilesServiceServer struct{}
 
-func (UnimplementedFilesServiceServer) DownloadFile(context.Context, *DownloadFileRequest) (*DownloadFileResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method DownloadFile not implemented")
-}
-func (UnimplementedFilesServiceServer) RemoveFile(context.Context, *RemoveFileRequest) (*RemoveFileResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method RemoveFile not implemented")
+func (UnimplementedFilesServiceServer) SaveFile(context.Context, *SaveFileRequest) (*SaveFileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveFile not implemented")
 }
 func (UnimplementedFilesServiceServer) mustEmbedUnimplementedFilesServiceServer() {}
 func (UnimplementedFilesServiceServer) testEmbeddedByValue()                      {}
@@ -102,38 +86,20 @@ func RegisterFilesServiceServer(s grpc.ServiceRegistrar, srv FilesServiceServer)
 	s.RegisterService(&FilesService_ServiceDesc, srv)
 }
 
-func _FilesService_DownloadFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DownloadFileRequest)
+func _FilesService_SaveFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FilesServiceServer).DownloadFile(ctx, in)
+		return srv.(FilesServiceServer).SaveFile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: FilesService_DownloadFile_FullMethodName,
+		FullMethod: FilesService_SaveFile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FilesServiceServer).DownloadFile(ctx, req.(*DownloadFileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FilesService_RemoveFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RemoveFileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FilesServiceServer).RemoveFile(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: FilesService_RemoveFile_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FilesServiceServer).RemoveFile(ctx, req.(*RemoveFileRequest))
+		return srv.(FilesServiceServer).SaveFile(ctx, req.(*SaveFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -146,12 +112,8 @@ var FilesService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*FilesServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DownloadFile",
-			Handler:    _FilesService_DownloadFile_Handler,
-		},
-		{
-			MethodName: "RemoveFile",
-			Handler:    _FilesService_RemoveFile_Handler,
+			MethodName: "SaveFile",
+			Handler:    _FilesService_SaveFile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
