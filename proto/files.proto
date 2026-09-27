@@ -6,6 +6,7 @@ option go_package = ".";
 
 message SaveFileRequest {
   bytes file = 1;
+  bool save_forever = 2;
 }
 
 message SaveFileResponse {

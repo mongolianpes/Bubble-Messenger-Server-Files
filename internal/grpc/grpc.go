@@ -26,7 +26,7 @@ func NewSaveFilesService(storage storage.Storage) *GRPCService {
 }
 
 func (s *GRPCService) Save(ctx context.Context, req *pb.SaveFileRequest) (*pb.SaveFileResponse, error) {
-	filepath, err := s.file.SaveFile(req.File)
+	filepath, err := s.file.SaveFile(req.File, req.SaveForever)
 	if err != nil {
 		return nil, err
 	}

@@ -12,15 +12,17 @@ import (
 )
 
 const (
-	FilesDirPath   = "files/"
-	codeAccessDir  = 0700
-	codeAccessFile = 0600
+	FilesDirPath           = "files/"
+	TimeToLiveFilesDirPath = FilesDirPath + "users/"
+	foreversDirPath        = FilesDirPath + "avatars/"
+	codeAccessDir          = 0700
+	codeAccessFile         = 0600
 )
 
 type File struct{}
 
 type Storage interface {
-	SaveFile(fileData []byte) (string, error)
+	SaveFile(fileData []byte, saveAvatar bool) (string, error)
 	DelFile(storagePath string) error
 }
 
@@ -32,9 +34,17 @@ func NewStorage() *File {
 	return &File{}
 }
 
-func (s *File) SaveFile(fileData []byte) (string, error) {
+func (s *File) SaveFile(fileData []byte, saveForever bool) (string, error) {
 	time := time.Now()
-	filepathDir := fmt.Sprintf("%v/%v/%v/%v/%v/", FilesDirPath, time.Year(), int(time.Month()), time.Day(), time.Hour())
+
+	fileDirPathToSave := FilesDirPath
+	if saveForever {
+		fileDirPathToSave += foreversDirPath
+	} else {
+		fileDirPathToSave += TimeToLiveFilesDirPath
+	}
+
+	filepathDir := fmt.Sprintf("%v/%v/%v/%v/%v/", fileDirPathToSave, time.Year(), int(time.Month()), time.Day(), time.Hour())
 
 	if err := os.MkdirAll(filepathDir, codeAccessDir); err != nil {
 		return "", err

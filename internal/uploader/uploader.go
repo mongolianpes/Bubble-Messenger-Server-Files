@@ -17,7 +17,7 @@ func NewUploaderService() *UploaderService {
 }
 
 func (s *UploaderService) StartUploaderHHTPservice(port string) {
-	fs := http.FileServer(http.Dir(storage.FilesDirPath))
+	fs := http.FileServer(http.Dir(storage.TimeToLiveFilesDirPath))
 
 	http.Handle("/", fs)
 

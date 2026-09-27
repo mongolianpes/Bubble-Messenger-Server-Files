@@ -24,6 +24,7 @@ const (
 type SaveFileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	File          []byte                 `protobuf:"bytes,1,opt,name=file,proto3" json:"file,omitempty"`
+	SaveForever   bool                   `protobuf:"varint,2,opt,name=save_forever,json=saveForever,proto3" json:"save_forever,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -63,6 +64,13 @@ func (x *SaveFileRequest) GetFile() []byte {
 		return x.File
 	}
 	return nil
+}
+
+func (x *SaveFileRequest) GetSaveForever() bool {
+	if x != nil {
+		return x.SaveForever
+	}
+	return false
 }
 
 type SaveFileResponse struct {
@@ -193,9 +201,10 @@ var File_files_proto protoreflect.FileDescriptor
 
 const file_files_proto_rawDesc = "" +
 	"\n" +
-	"\vfiles.proto\x12\x05files\"%\n" +
+	"\vfiles.proto\x12\x05files\"H\n" +
 	"\x0fSaveFileRequest\x12\x12\n" +
-	"\x04file\x18\x01 \x01(\fR\x04file\"5\n" +
+	"\x04file\x18\x01 \x01(\fR\x04file\x12!\n" +
+	"\fsave_forever\x18\x02 \x01(\bR\vsaveForever\"5\n" +
 	"\x10SaveFileResponse\x12!\n" +
 	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"3\n" +
 	"\x0eDelFileRequest\x12!\n" +
