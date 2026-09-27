@@ -17,21 +17,22 @@ const (
 	codeAccessFile = 0600
 )
 
-type Files struct{}
+type File struct{}
 
-type Saver interface {
-	Save(fileData []byte) (string, error)
+type Storage interface {
+	SaveFile(fileData []byte) (string, error)
+	DelFile(storagePath string) error
 }
 
 type Cleaner interface {
 	RemoveOld() error
 }
 
-func NewStorage() *Files {
-	return &Files{}
+func NewStorage() *File {
+	return &File{}
 }
 
-func (s *Files) Save(fileData []byte) (string, error) {
+func (s *File) SaveFile(fileData []byte) (string, error) {
 	time := time.Now()
 	filepathDir := fmt.Sprintf("%v/%v/%v/%v/%v/", FilesDirPath, time.Year(), int(time.Month()), time.Day(), time.Hour())
 
@@ -47,7 +48,11 @@ func (s *Files) Save(fileData []byte) (string, error) {
 	return filepath, nil
 }
 
-func (s *Files) RemoveOld() error {
+func (s *File) DelFile(storagePath string) error {
+	return os.Remove(storagePath)
+}
+
+func (s *File) RemoveOld() error {
 	root := FilesDirPath
 	removeTime := time.Now().Add(-15 * 24 * time.Hour)
 	removeYear := removeTime.Year()

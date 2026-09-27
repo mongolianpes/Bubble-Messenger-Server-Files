@@ -6,7 +6,7 @@ import (
 
 func main() {
 	filesService := service.NewFilesService()
-	go filesService.StartSaver()
+	go filesService.StartGRPCService()
 	go filesService.StartUploader()
 	go filesService.StartFilesCleaner()
 }
