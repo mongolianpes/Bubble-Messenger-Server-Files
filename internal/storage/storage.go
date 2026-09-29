@@ -8,7 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"uuid"
+
+	"github.com/google/uuid"
 )
 
 const (
