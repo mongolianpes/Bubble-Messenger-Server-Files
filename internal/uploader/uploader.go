@@ -2,7 +2,7 @@ package uploader
 
 import (
 	"files/internal/storage"
-	"log"
+	"log/slog"
 	"net/http"
 )
 
@@ -25,6 +25,6 @@ func (s *UploaderService) StartUploaderHHTPservice(port, storagePath string) {
 
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Error start HTTP uploader", "error", err)
 	}
 }

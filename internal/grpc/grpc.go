@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"log/slog"
 	"net"
 
 	"files/internal/storage"
@@ -28,6 +29,7 @@ func NewSaveFilesService(storage storage.Storage) *GRPCService {
 func (s *GRPCService) Save(ctx context.Context, req *pb.SaveFileRequest) (*pb.SaveFileResponse, error) {
 	filepath, err := s.file.SaveFile(req.File, req.SaveForever)
 	if err != nil {
+		slog.ErrorContext(ctx, "Cant save file", "SaveForever", req.SaveForever, "error", err)
 		return nil, err
 	}
 
@@ -38,6 +40,7 @@ func (s *GRPCService) Save(ctx context.Context, req *pb.SaveFileRequest) (*pb.Sa
 
 func (s *GRPCService) DelFile(ctx context.Context, req *pb.DelFileRequest) (*pb.DelFileResponse, error) {
 	if err := s.file.DelFile(req.StoragePath); err != nil {
+		slog.ErrorContext(ctx, "Cant del file", "storagePath", req.StoragePath, "error", err)
 		return nil, err
 	}
 
@@ -49,11 +52,11 @@ func (s *GRPCService) Start() {
 
 	lis, err := net.Listen("tcp", ":8086")
 	if err != nil {
-		panic(err)
+		slog.Error("Error setup net listener for gRPC service", "error", err)
 	}
 
 	pb.RegisterFilesServiceServer(grpcServer, NewSaveFilesService(s.file))
 	if err := grpcServer.Serve(lis); err != nil {
-		panic(err)
+		slog.Error("Error serve gRPC service", "error", err)
 	}
 }
