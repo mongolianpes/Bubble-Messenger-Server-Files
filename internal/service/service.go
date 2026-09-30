@@ -8,6 +8,8 @@ import (
 	"files/internal/uploader"
 )
 
+const filesDirPath = "files/"
+
 type FilesService struct {
 	uploader    uploader.Uploader
 	grpcService grpc.GRPCServiceStarter
@@ -15,7 +17,7 @@ type FilesService struct {
 }
 
 func NewFilesService() *FilesService {
-	filesStorage := storage.NewStorage()
+	filesStorage := storage.NewStorage(filesDirPath)
 	grpcService := grpc.NewSaveFilesService(filesStorage)
 	uploaderService := uploader.NewUploaderService()
 	return &FilesService{
@@ -30,7 +32,7 @@ func (s *FilesService) StartGRPCService() {
 }
 
 func (s *FilesService) StartUploader() {
-	s.uploader.StartUploaderHHTPservice(":8080")
+	s.uploader.StartUploaderHHTPservice(":8080", filesDirPath)
 }
 
 func (s *FilesService) StartFilesCleaner() {

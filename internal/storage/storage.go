@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,14 +14,15 @@ import (
 )
 
 const (
-	FilesDirPath           = "files/"
-	TimeToLiveFilesDirPath = FilesDirPath + "users/"
-	foreversDirPath        = FilesDirPath + "avatars/"
+	TimeToLiveFilesDirPath = "users/"
+	ForeversDirPath        = "avatars/"
 	codeAccessDir          = 0700
 	codeAccessFile         = 0600
 )
 
-type File struct{}
+type File struct {
+	storagePath string
+}
 
 type Storage interface {
 	SaveFile(fileData []byte, saveAvatar bool) (string, error)
@@ -31,18 +33,21 @@ type Cleaner interface {
 	RemoveOld() error
 }
 
-func NewStorage() *File {
-	return &File{}
+func NewStorage(storagePath string) *File {
+	return &File{
+		storagePath: storagePath,
+	}
 }
+
+func (s *File) usersDir() string   { return filepath.Join(s.storagePath, TimeToLiveFilesDirPath) }
+func (s *File) avatarsDir() string { return filepath.Join(s.storagePath, ForeversDirPath) }
 
 func (s *File) SaveFile(fileData []byte, saveForever bool) (string, error) {
 	time := time.Now()
 
-	fileDirPathToSave := FilesDirPath
+	fileDirPathToSave := s.usersDir()
 	if saveForever {
-		fileDirPathToSave += foreversDirPath
-	} else {
-		fileDirPathToSave += TimeToLiveFilesDirPath
+		fileDirPathToSave = s.avatarsDir()
 	}
 
 	filepathDir := fmt.Sprintf("%v/%v/%v/%v/%v/", fileDirPathToSave, time.Year(), int(time.Month()), time.Day(), time.Hour())
@@ -64,65 +69,46 @@ func (s *File) DelFile(storagePath string) error {
 }
 
 func (s *File) RemoveOld() error {
-	root := FilesDirPath
-	removeTime := time.Now().Add(-15 * 24 * time.Hour)
-	removeYear := removeTime.Year()
-	removeMonth := int(removeTime.Month())
-	removeDay := removeTime.Day()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Default().Printf("Recovered in RemoveOld: %v", r)
+		}
+	}()
 
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	cutoff := time.Now().Add(-15 * 24 * time.Hour)
+	root := s.usersDir()
+
+	return filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
-
 		if !d.IsDir() {
 			return nil
 		}
 
-		splittedDirPath := strings.Split(d.Name(), "/")
-
-		year, err := strconv.Atoi(splittedDirPath[1])
-		if err != nil {
-			return err
+		rel, err := filepath.Rel(root, path)
+		if err != nil || rel == "." {
+			return nil
 		}
-		if year > removeYear {
-			if err := os.RemoveAll(d.Name()); err != nil {
+		parts := strings.Split(rel, string(filepath.Separator))
+		if len(parts) < 3 {
+			return nil
+		}
+
+		year, err1 := strconv.Atoi(parts[0])
+		month, err2 := strconv.Atoi(parts[1])
+		day, err3 := strconv.Atoi(parts[2])
+		if err1 != nil || err2 != nil || err3 != nil {
+			return nil
+		}
+
+		dirTime := time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+		if dirTime.Before(cutoff) {
+			if err := os.RemoveAll(path); err != nil {
 				return err
 			}
-
 			return filepath.SkipDir
 		}
-
-		month, err := strconv.Atoi(splittedDirPath[2])
-		if err != nil {
-			return err
-		}
-		if month > removeMonth {
-			if err := os.RemoveAll(d.Name()); err != nil {
-				return err
-			}
-
-			return filepath.SkipDir
-		}
-
-		day, err := strconv.Atoi(splittedDirPath[3])
-		if err != nil {
-			return err
-		}
-		if day > removeDay {
-			if err := os.RemoveAll(d.Name()); err != nil {
-				return err
-			}
-
-			return filepath.SkipDir
-		}
-
 		return nil
 	})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
