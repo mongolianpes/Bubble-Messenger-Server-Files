@@ -1,7 +1,6 @@
 package uploader
 
 import (
-	"files/internal/storage"
 	"log/slog"
 	"net/http"
 )
@@ -17,11 +16,9 @@ func NewUploaderService() *UploaderService {
 }
 
 func (s *UploaderService) StartUploaderHHTPservice(port, storagePath string) {
-	fsFiles := http.FileServer(http.Dir(storagePath + storage.TimeToLiveFilesDirPath))
-	fsAvatars := http.FileServer(http.Dir(storagePath + storage.ForeversDirPath))
+	fs := http.FileServer(http.Dir(storagePath))
 
-	http.Handle("/users/", fsFiles)
-	http.Handle("/avatars/", fsAvatars)
+	http.Handle("/storage/", http.StripPrefix("/storage/", fs))
 
 	err := http.ListenAndServe(port, nil)
 	if err != nil {

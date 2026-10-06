@@ -38,7 +38,7 @@ func (s *GRPCService) Save(ctx context.Context, req *pb.SaveFileRequest) (*pb.Sa
 	}, nil
 }
 
-func (s *GRPCService) DelFile(ctx context.Context, req *pb.DelFileRequest) (*pb.DelFileResponse, error) {
+func (s *GRPCService) Del(ctx context.Context, req *pb.DelFileRequest) (*pb.DelFileResponse, error) {
 	if err := s.file.DelFile(req.StoragePath); err != nil {
 		slog.ErrorContext(ctx, "Cant del file", "storagePath", req.StoragePath, "error", err)
 		return nil, err

@@ -12,6 +12,7 @@ RUN GOOS=linux GOARCH=amd64 go build -o files ./cmd/files
 FROM alpine:latest
 
 WORKDIR /files
+RUN mkdir -p /files/storage
 
 COPY --from=builder /files/files .
 

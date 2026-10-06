@@ -9,4 +9,5 @@ func main() {
 	go filesService.StartGRPCService()
 	go filesService.StartUploader()
 	go filesService.StartFilesCleaner()
+	select {}
 }

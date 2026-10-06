@@ -8,7 +8,7 @@ import (
 	"files/internal/uploader"
 )
 
-const filesDirPath = "files/"
+const filesDirPath = "storage/"
 
 type FilesService struct {
 	uploader    uploader.Uploader
