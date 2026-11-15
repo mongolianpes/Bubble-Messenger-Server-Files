@@ -18,7 +18,7 @@ type TempSetter interface {
 }
 
 type TempGetter interface {
-	GetStoragePathByTempPath(ctx context.Context, tempPath string) (string, error)
+	GetStoragePath(ctx context.Context, tempPath string) (string, error)
 }
 
 func NewRedisStorage() (*RedisStorage, error) {

@@ -10,6 +10,7 @@ import (
 
 	"files/internal/rdb"
 	"files/internal/storage"
+	"files/internal/waiter"
 )
 
 type FilesRequest struct {
@@ -17,16 +18,21 @@ type FilesRequest struct {
 }
 
 type UploaderService struct {
-	temp    rdb.TempGetter
-	storage storage.Storage
+	Temp    rdb.TempGetter
+	Storage storage.Storage
+	waiters *waiter.WaiterService
 }
 
 type Uploader interface {
 	StartFilesHTTPServer(port, storagePath string)
 }
 
-func NewUploaderService() *UploaderService {
-	return &UploaderService{}
+func NewUploaderService(temp rdb.TempGetter, storage storage.Storage, usedTempPaths map[string]struct{}) *UploaderService {
+	return &UploaderService{
+		Temp:    temp,
+		Storage: storage,
+		waiters: waiter.NewWaiterService(),
+	}
 }
 
 func (s *UploaderService) StartFilesHTTPServer(port, storagePath string) {
@@ -42,7 +48,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	storagePath, err := s.temp.GetStoragePathByTempPath(ctx, r.URL.Path)
+	storagePath, err := s.Temp.GetStoragePath(ctx, r.URL.Path)
 	if err != nil {
 		slog.Error("Error get storage path", "error", err)
 		w.Write([]byte("Error get storage path"))
@@ -50,9 +56,11 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch storagePath {
-	case "save_avatar":
+	case "save_avatar", "save_file":
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
+			s.notifyWaiter(r.URL.Path, err)
+
 			slog.Error("Error read request body", "error", err)
 			w.Write([]byte("Error read request body"))
 			return
@@ -60,38 +68,32 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 		req := &FilesRequest{}
 		if err = json.Unmarshal(body, &req); err != nil {
+			s.notifyWaiter(r.URL.Path, err)
+
 			w.Write([]byte("Error unmarshal request body"))
 			return
 		}
 
-		storagePath, err = s.storage.SaveFile(req.File, true)
+		saveAvatar := false
+		if storagePath == "save_avatar" {
+			saveAvatar = true
+		}
+
+		storagePath, err = s.Storage.SaveFile(req.File, saveAvatar)
 		if err != nil {
+			s.notifyWaiter(r.URL.Path, err)
+
 			slog.Error("Error save file", "error", err)
 			w.Write([]byte("Error save file"))
 			return
 		}
-	case "save_file":
-		body, err := io.ReadAll(r.Body)
-		if err != nil {
-			slog.Error("Error read request body", "error", err)
-			w.Write([]byte("Error read request body"))
-			return
-		}
 
-		req := &FilesRequest{}
-		if err = json.Unmarshal(body, &req); err != nil {
-			w.Write([]byte("Error unmarshal request body"))
-			return
-		}
+		s.notifyWaiter(r.URL.Path, nil)
 
-		storagePath, err = s.storage.SaveFile(req.File, false)
-		if err != nil {
-			slog.Error("Error save file", "error", err)
-			w.Write([]byte("Error save file"))
-			return
-		}
+		w.WriteHeader(http.StatusOK)
+		return
 	default:
-		file, err := s.storage.GetFile(storagePath)
+		file, err := s.Storage.GetFile(storagePath)
 		if err != nil {
 			slog.Error("Cant read file", "error", err)
 			w.Write([]byte("Error read file"))
@@ -100,5 +102,20 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.Write(file)
 		return
+	}
+}
+
+func (s *UploaderService) notifyWaiter(tempPath string, err error) {
+	s.waiters.Mu.Lock()
+	ch, ok := s.waiters.Waiters[tempPath]
+	s.waiters.Mu.Unlock()
+
+	if !ok {
+		return
+	}
+
+	select {
+	case ch <- err:
+	default:
 	}
 }

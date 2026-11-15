@@ -10,15 +10,16 @@ message DelFileRequest {
 
 message DelFileResponse {}
 
-message GenerateTempPathReqeust {
+message TempPathReqeust {
   string info = 1;
 }
 
-message GenerateTempPathResponse {
+message TempPathResponse {
   string temp_path = 1;
+  bool success = 2;
 }
 
 service FilesService {
   rpc Del(DelFileRequest) returns (DelFileResponse);
-  rpc GenerateTempPath(GenerateTempPathReqeust) returns (GenerateTempPathResponse);
+  rpc TempPath(TempPathReqeust) returns (stream TempPathResponse);
 }

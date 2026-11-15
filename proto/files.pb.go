@@ -101,27 +101,27 @@ func (*DelFileResponse) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{1}
 }
 
-type GenerateTempPathReqeust struct {
+type TempPathReqeust struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Info          string                 `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GenerateTempPathReqeust) Reset() {
-	*x = GenerateTempPathReqeust{}
+func (x *TempPathReqeust) Reset() {
+	*x = TempPathReqeust{}
 	mi := &file_files_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GenerateTempPathReqeust) String() string {
+func (x *TempPathReqeust) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GenerateTempPathReqeust) ProtoMessage() {}
+func (*TempPathReqeust) ProtoMessage() {}
 
-func (x *GenerateTempPathReqeust) ProtoReflect() protoreflect.Message {
+func (x *TempPathReqeust) ProtoReflect() protoreflect.Message {
 	mi := &file_files_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -133,39 +133,40 @@ func (x *GenerateTempPathReqeust) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GenerateTempPathReqeust.ProtoReflect.Descriptor instead.
-func (*GenerateTempPathReqeust) Descriptor() ([]byte, []int) {
+// Deprecated: Use TempPathReqeust.ProtoReflect.Descriptor instead.
+func (*TempPathReqeust) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GenerateTempPathReqeust) GetInfo() string {
+func (x *TempPathReqeust) GetInfo() string {
 	if x != nil {
 		return x.Info
 	}
 	return ""
 }
 
-type GenerateTempPathResponse struct {
+type TempPathResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TempPath      string                 `protobuf:"bytes,1,opt,name=temp_path,json=tempPath,proto3" json:"temp_path,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GenerateTempPathResponse) Reset() {
-	*x = GenerateTempPathResponse{}
+func (x *TempPathResponse) Reset() {
+	*x = TempPathResponse{}
 	mi := &file_files_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GenerateTempPathResponse) String() string {
+func (x *TempPathResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GenerateTempPathResponse) ProtoMessage() {}
+func (*TempPathResponse) ProtoMessage() {}
 
-func (x *GenerateTempPathResponse) ProtoReflect() protoreflect.Message {
+func (x *TempPathResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_files_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -177,16 +178,23 @@ func (x *GenerateTempPathResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GenerateTempPathResponse.ProtoReflect.Descriptor instead.
-func (*GenerateTempPathResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use TempPathResponse.ProtoReflect.Descriptor instead.
+func (*TempPathResponse) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GenerateTempPathResponse) GetTempPath() string {
+func (x *TempPathResponse) GetTempPath() string {
 	if x != nil {
 		return x.TempPath
 	}
 	return ""
+}
+
+func (x *TempPathResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
 }
 
 var File_files_proto protoreflect.FileDescriptor
@@ -196,14 +204,15 @@ const file_files_proto_rawDesc = "" +
 	"\vfiles.proto\x12\x05files\"3\n" +
 	"\x0eDelFileRequest\x12!\n" +
 	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"\x11\n" +
-	"\x0fDelFileResponse\"-\n" +
-	"\x17GenerateTempPathReqeust\x12\x12\n" +
-	"\x04info\x18\x01 \x01(\tR\x04info\"7\n" +
-	"\x18GenerateTempPathResponse\x12\x1b\n" +
-	"\ttemp_path\x18\x01 \x01(\tR\btempPath2\x99\x01\n" +
+	"\x0fDelFileResponse\"%\n" +
+	"\x0fTempPathReqeust\x12\x12\n" +
+	"\x04info\x18\x01 \x01(\tR\x04info\"I\n" +
+	"\x10TempPathResponse\x12\x1b\n" +
+	"\ttemp_path\x18\x01 \x01(\tR\btempPath\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\x83\x01\n" +
 	"\fFilesService\x124\n" +
-	"\x03Del\x12\x15.files.DelFileRequest\x1a\x16.files.DelFileResponse\x12S\n" +
-	"\x10GenerateTempPath\x12\x1e.files.GenerateTempPathReqeust\x1a\x1f.files.GenerateTempPathResponseB\x03Z\x01.b\x06proto3"
+	"\x03Del\x12\x15.files.DelFileRequest\x1a\x16.files.DelFileResponse\x12=\n" +
+	"\bTempPath\x12\x16.files.TempPathReqeust\x1a\x17.files.TempPathResponse0\x01B\x03Z\x01.b\x06proto3"
 
 var (
 	file_files_proto_rawDescOnce sync.Once
@@ -219,16 +228,16 @@ func file_files_proto_rawDescGZIP() []byte {
 
 var file_files_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_files_proto_goTypes = []any{
-	(*DelFileRequest)(nil),           // 0: files.DelFileRequest
-	(*DelFileResponse)(nil),          // 1: files.DelFileResponse
-	(*GenerateTempPathReqeust)(nil),  // 2: files.GenerateTempPathReqeust
-	(*GenerateTempPathResponse)(nil), // 3: files.GenerateTempPathResponse
+	(*DelFileRequest)(nil),   // 0: files.DelFileRequest
+	(*DelFileResponse)(nil),  // 1: files.DelFileResponse
+	(*TempPathReqeust)(nil),  // 2: files.TempPathReqeust
+	(*TempPathResponse)(nil), // 3: files.TempPathResponse
 }
 var file_files_proto_depIdxs = []int32{
 	0, // 0: files.FilesService.Del:input_type -> files.DelFileRequest
-	2, // 1: files.FilesService.GenerateTempPath:input_type -> files.GenerateTempPathReqeust
+	2, // 1: files.FilesService.TempPath:input_type -> files.TempPathReqeust
 	1, // 2: files.FilesService.Del:output_type -> files.DelFileResponse
-	3, // 3: files.FilesService.GenerateTempPath:output_type -> files.GenerateTempPathResponse
+	3, // 3: files.FilesService.TempPath:output_type -> files.TempPathResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

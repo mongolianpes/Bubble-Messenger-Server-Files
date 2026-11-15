@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"files/internal/grpc"
+	"files/internal/rdb"
 	"files/internal/storage"
 	"files/internal/uploader"
 )
@@ -17,9 +18,11 @@ type FilesService struct {
 }
 
 func NewFilesService() *FilesService {
+	usedTempPaths := make(map[string]struct{})
 	filesStorage := storage.NewStorage(filesDirPath)
-	grpcService := grpc.NewSaveFilesService(filesStorage)
-	uploaderService := uploader.NewUploaderService()
+	grpcService := grpc.NewSaveFilesService(filesStorage, usedTempPaths)
+	temp, _ := rdb.NewRedisStorage()
+	uploaderService := uploader.NewUploaderService(temp, filesStorage, usedTempPaths)
 	return &FilesService{
 		uploader:    uploaderService,
 		grpcService: grpcService,
