@@ -21,102 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type SaveFileRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	File          []byte                 `protobuf:"bytes,1,opt,name=file,proto3" json:"file,omitempty"`
-	SaveForever   bool                   `protobuf:"varint,2,opt,name=save_forever,json=saveForever,proto3" json:"save_forever,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SaveFileRequest) Reset() {
-	*x = SaveFileRequest{}
-	mi := &file_files_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SaveFileRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SaveFileRequest) ProtoMessage() {}
-
-func (x *SaveFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SaveFileRequest.ProtoReflect.Descriptor instead.
-func (*SaveFileRequest) Descriptor() ([]byte, []int) {
-	return file_files_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *SaveFileRequest) GetFile() []byte {
-	if x != nil {
-		return x.File
-	}
-	return nil
-}
-
-func (x *SaveFileRequest) GetSaveForever() bool {
-	if x != nil {
-		return x.SaveForever
-	}
-	return false
-}
-
-type SaveFileResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	StoragePath   string                 `protobuf:"bytes,1,opt,name=storage_path,json=storagePath,proto3" json:"storage_path,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SaveFileResponse) Reset() {
-	*x = SaveFileResponse{}
-	mi := &file_files_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SaveFileResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SaveFileResponse) ProtoMessage() {}
-
-func (x *SaveFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SaveFileResponse.ProtoReflect.Descriptor instead.
-func (*SaveFileResponse) Descriptor() ([]byte, []int) {
-	return file_files_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *SaveFileResponse) GetStoragePath() string {
-	if x != nil {
-		return x.StoragePath
-	}
-	return ""
-}
-
 type DelFileRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	StoragePath   string                 `protobuf:"bytes,1,opt,name=storage_path,json=storagePath,proto3" json:"storage_path,omitempty"`
@@ -126,7 +30,7 @@ type DelFileRequest struct {
 
 func (x *DelFileRequest) Reset() {
 	*x = DelFileRequest{}
-	mi := &file_files_proto_msgTypes[2]
+	mi := &file_files_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +42,7 @@ func (x *DelFileRequest) String() string {
 func (*DelFileRequest) ProtoMessage() {}
 
 func (x *DelFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[2]
+	mi := &file_files_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +55,7 @@ func (x *DelFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DelFileRequest.ProtoReflect.Descriptor instead.
 func (*DelFileRequest) Descriptor() ([]byte, []int) {
-	return file_files_proto_rawDescGZIP(), []int{2}
+	return file_files_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *DelFileRequest) GetStoragePath() string {
@@ -169,7 +73,7 @@ type DelFileResponse struct {
 
 func (x *DelFileResponse) Reset() {
 	*x = DelFileResponse{}
-	mi := &file_files_proto_msgTypes[3]
+	mi := &file_files_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +85,7 @@ func (x *DelFileResponse) String() string {
 func (*DelFileResponse) ProtoMessage() {}
 
 func (x *DelFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_files_proto_msgTypes[3]
+	mi := &file_files_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,25 +98,112 @@ func (x *DelFileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DelFileResponse.ProtoReflect.Descriptor instead.
 func (*DelFileResponse) Descriptor() ([]byte, []int) {
+	return file_files_proto_rawDescGZIP(), []int{1}
+}
+
+type GenerateTempPathReqeust struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Info          string                 `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GenerateTempPathReqeust) Reset() {
+	*x = GenerateTempPathReqeust{}
+	mi := &file_files_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GenerateTempPathReqeust) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenerateTempPathReqeust) ProtoMessage() {}
+
+func (x *GenerateTempPathReqeust) ProtoReflect() protoreflect.Message {
+	mi := &file_files_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GenerateTempPathReqeust.ProtoReflect.Descriptor instead.
+func (*GenerateTempPathReqeust) Descriptor() ([]byte, []int) {
+	return file_files_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GenerateTempPathReqeust) GetInfo() string {
+	if x != nil {
+		return x.Info
+	}
+	return ""
+}
+
+type GenerateTempPathResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TempPath      string                 `protobuf:"bytes,1,opt,name=temp_path,json=tempPath,proto3" json:"temp_path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GenerateTempPathResponse) Reset() {
+	*x = GenerateTempPathResponse{}
+	mi := &file_files_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GenerateTempPathResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenerateTempPathResponse) ProtoMessage() {}
+
+func (x *GenerateTempPathResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_files_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GenerateTempPathResponse.ProtoReflect.Descriptor instead.
+func (*GenerateTempPathResponse) Descriptor() ([]byte, []int) {
 	return file_files_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GenerateTempPathResponse) GetTempPath() string {
+	if x != nil {
+		return x.TempPath
+	}
+	return ""
 }
 
 var File_files_proto protoreflect.FileDescriptor
 
 const file_files_proto_rawDesc = "" +
 	"\n" +
-	"\vfiles.proto\x12\x05files\"H\n" +
-	"\x0fSaveFileRequest\x12\x12\n" +
-	"\x04file\x18\x01 \x01(\fR\x04file\x12!\n" +
-	"\fsave_forever\x18\x02 \x01(\bR\vsaveForever\"5\n" +
-	"\x10SaveFileResponse\x12!\n" +
-	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"3\n" +
+	"\vfiles.proto\x12\x05files\"3\n" +
 	"\x0eDelFileRequest\x12!\n" +
 	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"\x11\n" +
-	"\x0fDelFileResponse2}\n" +
-	"\fFilesService\x127\n" +
-	"\x04Save\x12\x16.files.SaveFileRequest\x1a\x17.files.SaveFileResponse\x124\n" +
-	"\x03Del\x12\x15.files.DelFileRequest\x1a\x16.files.DelFileResponseB\x03Z\x01.b\x06proto3"
+	"\x0fDelFileResponse\"-\n" +
+	"\x17GenerateTempPathReqeust\x12\x12\n" +
+	"\x04info\x18\x01 \x01(\tR\x04info\"7\n" +
+	"\x18GenerateTempPathResponse\x12\x1b\n" +
+	"\ttemp_path\x18\x01 \x01(\tR\btempPath2\x99\x01\n" +
+	"\fFilesService\x124\n" +
+	"\x03Del\x12\x15.files.DelFileRequest\x1a\x16.files.DelFileResponse\x12S\n" +
+	"\x10GenerateTempPath\x12\x1e.files.GenerateTempPathReqeust\x1a\x1f.files.GenerateTempPathResponseB\x03Z\x01.b\x06proto3"
 
 var (
 	file_files_proto_rawDescOnce sync.Once
@@ -228,16 +219,16 @@ func file_files_proto_rawDescGZIP() []byte {
 
 var file_files_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_files_proto_goTypes = []any{
-	(*SaveFileRequest)(nil),  // 0: files.SaveFileRequest
-	(*SaveFileResponse)(nil), // 1: files.SaveFileResponse
-	(*DelFileRequest)(nil),   // 2: files.DelFileRequest
-	(*DelFileResponse)(nil),  // 3: files.DelFileResponse
+	(*DelFileRequest)(nil),           // 0: files.DelFileRequest
+	(*DelFileResponse)(nil),          // 1: files.DelFileResponse
+	(*GenerateTempPathReqeust)(nil),  // 2: files.GenerateTempPathReqeust
+	(*GenerateTempPathResponse)(nil), // 3: files.GenerateTempPathResponse
 }
 var file_files_proto_depIdxs = []int32{
-	0, // 0: files.FilesService.Save:input_type -> files.SaveFileRequest
-	2, // 1: files.FilesService.Del:input_type -> files.DelFileRequest
-	1, // 2: files.FilesService.Save:output_type -> files.SaveFileResponse
-	3, // 3: files.FilesService.Del:output_type -> files.DelFileResponse
+	0, // 0: files.FilesService.Del:input_type -> files.DelFileRequest
+	2, // 1: files.FilesService.GenerateTempPath:input_type -> files.GenerateTempPathReqeust
+	1, // 2: files.FilesService.Del:output_type -> files.DelFileResponse
+	3, // 3: files.FilesService.GenerateTempPath:output_type -> files.GenerateTempPathResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

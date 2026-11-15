@@ -27,6 +27,7 @@ type File struct {
 type Storage interface {
 	SaveFile(fileData []byte, saveAvatar bool) (string, error)
 	DelFile(storagePath string) error
+	GetFile(storagePath string) ([]byte, error)
 }
 
 type Cleaner interface {
@@ -66,6 +67,13 @@ func (s *File) SaveFile(fileData []byte, saveForever bool) (string, error) {
 
 func (s *File) DelFile(storagePath string) error {
 	return os.Remove(storagePath)
+}
+
+func (s *File) GetFile(storagePath string) ([]byte, error) {
+	if strings.Contains(storagePath, "..") {
+		return nil, fmt.Errorf("Invalid path")
+	}
+	return os.ReadFile(storagePath)
 }
 
 func (s *File) RemoveOld() error {

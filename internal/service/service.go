@@ -32,7 +32,7 @@ func (s *FilesService) StartGRPCService() {
 }
 
 func (s *FilesService) StartUploader() {
-	s.uploader.StartUploaderHHTPservice(":8080", filesDirPath)
+	s.uploader.StartFilesHTTPServer(":8080", filesDirPath)
 }
 
 func (s *FilesService) StartFilesCleaner() {

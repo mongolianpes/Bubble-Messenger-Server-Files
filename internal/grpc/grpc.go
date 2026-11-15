@@ -2,9 +2,12 @@ package grpc
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"log/slog"
 	"net"
 
+	"files/internal/rdb"
 	"files/internal/storage"
 	pb "files/proto"
 
@@ -14,6 +17,7 @@ import (
 type GRPCService struct {
 	pb.UnimplementedFilesServiceServer
 	file storage.Storage
+	temp rdb.TempSetter
 }
 
 type GRPCServiceStarter interface {
@@ -26,18 +30,6 @@ func NewSaveFilesService(storage storage.Storage) *GRPCService {
 	}
 }
 
-func (s *GRPCService) Save(ctx context.Context, req *pb.SaveFileRequest) (*pb.SaveFileResponse, error) {
-	filepath, err := s.file.SaveFile(req.File, req.SaveForever)
-	if err != nil {
-		slog.ErrorContext(ctx, "Cant save file", "SaveForever", req.SaveForever, "error", err)
-		return nil, err
-	}
-
-	return &pb.SaveFileResponse{
-		StoragePath: filepath,
-	}, nil
-}
-
 func (s *GRPCService) Del(ctx context.Context, req *pb.DelFileRequest) (*pb.DelFileResponse, error) {
 	if err := s.file.DelFile(req.StoragePath); err != nil {
 		slog.ErrorContext(ctx, "Cant del file", "storagePath", req.StoragePath, "error", err)
@@ -45,6 +37,22 @@ func (s *GRPCService) Del(ctx context.Context, req *pb.DelFileRequest) (*pb.DelF
 	}
 
 	return &pb.DelFileResponse{}, nil
+}
+
+func (s *GRPCService) GenerateTempPath(ctx context.Context, req *pb.GenerateTempPathReqeust) (*pb.GenerateTempPathResponse, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return nil, err
+	}
+
+	tempPath := base64.RawURLEncoding.EncodeToString(b)
+
+	if err := s.temp.SetTempPath(ctx, tempPath, req.Info); err != nil {
+		slog.ErrorContext(ctx, "Cant save temp path", "info", req.Info, "error", err)
+		return nil, err
+	}
+
+	return &pb.GenerateTempPathResponse{TempPath: tempPath}, nil
 }
 
 func (s *GRPCService) Start() {

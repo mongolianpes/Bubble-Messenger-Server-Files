@@ -4,22 +4,21 @@ package files;
 
 option go_package = ".";
 
-message SaveFileRequest {
-  bytes file = 1;
-  bool save_forever = 2;
-}
-
-message SaveFileResponse {
-  string storage_path = 1;
-}
-
 message DelFileRequest {
   string storage_path = 1;
 }
 
 message DelFileResponse {}
 
+message GenerateTempPathReqeust {
+  string info = 1;
+}
+
+message GenerateTempPathResponse {
+  string temp_path = 1;
+}
+
 service FilesService {
-  rpc Save(SaveFileRequest) returns (SaveFileResponse);
   rpc Del(DelFileRequest) returns (DelFileResponse);
+  rpc GenerateTempPath(GenerateTempPathReqeust) returns (GenerateTempPathResponse);
 }
