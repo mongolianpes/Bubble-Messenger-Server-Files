@@ -11,12 +11,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const testReceiverLogin = "recLogin"
+
 func TestSaveFile(t *testing.T) {
 	t.Run("ttl file", func(t *testing.T) {
 		s := NewStorage(t.TempDir())
 		data := []byte("hello")
 
-		path, err := s.SaveFile(data, false)
+		path, err := s.SaveFile(data, testReceiverLogin, false)
 		require.NoError(t, err)
 		require.FileExists(t, path)
 
@@ -32,7 +34,7 @@ func TestSaveFile(t *testing.T) {
 		s := NewStorage(t.TempDir())
 		data := []byte("avatar")
 
-		path, err := s.SaveFile(data, true)
+		path, err := s.SaveFile(data, testReceiverLogin, true)
 		require.NoError(t, err)
 		require.FileExists(t, path)
 
@@ -44,7 +46,7 @@ func TestSaveFile(t *testing.T) {
 		s := NewStorage(t.TempDir())
 		now := time.Now()
 
-		path, err := s.SaveFile([]byte("x"), false)
+		path, err := s.SaveFile([]byte("x"), testReceiverLogin, false)
 		require.NoError(t, err)
 
 		assert.Contains(t, path, strconv.Itoa(now.Year()))
@@ -56,7 +58,7 @@ func TestSaveFile(t *testing.T) {
 func TestDelFile(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 		s := NewStorage(t.TempDir())
-		path, err := s.SaveFile([]byte("x"), false)
+		path, err := s.SaveFile([]byte("x"), testReceiverLogin, false)
 		require.NoError(t, err)
 
 		require.NoError(t, s.DelFile(path))
@@ -88,11 +90,11 @@ func TestRemoveOld(t *testing.T) {
 		require.NoError(t, os.WriteFile(oldFile, []byte("old"), 0o600))
 
 		// свежий файл через SaveFile
-		freshPath, err := s.SaveFile([]byte("fresh"), false)
+		freshPath, err := s.SaveFile([]byte("fresh"), testReceiverLogin, false)
 		require.NoError(t, err)
 
 		// avatar не должен удаляться
-		avatarPath, err := s.SaveFile([]byte("ava"), true)
+		avatarPath, err := s.SaveFile([]byte("ava"), testReceiverLogin, true)
 		require.NoError(t, err)
 
 		require.NoError(t, s.RemoveOld())
@@ -104,7 +106,7 @@ func TestRemoveOld(t *testing.T) {
 
 	t.Run("keeps recent files", func(t *testing.T) {
 		s := NewStorage(t.TempDir())
-		path, err := s.SaveFile([]byte("recent"), false)
+		path, err := s.SaveFile([]byte("recent"), testReceiverLogin, false)
 		require.NoError(t, err)
 
 		require.NoError(t, s.RemoveOld())

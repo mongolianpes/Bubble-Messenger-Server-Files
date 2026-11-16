@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"fmt"
 	"log/slog"
 	"net"
 
@@ -57,7 +58,17 @@ func (s *GRPCService) GenerateTempPath(req *pb.TempPathReqeust, stream pb.FilesS
 		return err
 	}
 
-	ch := make(chan error, 1)
+	switch req.Info {
+	case "save_avatar", "save_file":
+		if err := stream.Send(&pb.TempPathResponse{TempPath: tempPath}); err != nil {
+			return err
+		}
+
+		return nil
+	default:
+	}
+
+	ch := make(chan waiter.WaiterInfo, 1)
 
 	s.waiters.Mu.Lock()
 	s.waiters.Waiters[tempPath] = ch
@@ -74,13 +85,13 @@ func (s *GRPCService) GenerateTempPath(req *pb.TempPathReqeust, stream pb.FilesS
 	}
 
 	select {
-	case err := <-ch:
-		if err != nil {
-			return stream.Send(&pb.TempPathResponse{Success: false})
+	case status := <-ch:
+		if status.Err != nil {
+			return status.Err
 		}
-		return stream.Send(&pb.TempPathResponse{Success: true})
+		return stream.Send(&pb.TempPathResponse{StoragePath: status.Path})
 	case <-ctx.Done():
-		return stream.Send(&pb.TempPathResponse{Success: false})
+		return fmt.Errorf("Ошибка использования канала")
 	}
 }
 

@@ -148,7 +148,7 @@ func (x *TempPathReqeust) GetInfo() string {
 type TempPathResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	TempPath      string                 `protobuf:"bytes,1,opt,name=temp_path,json=tempPath,proto3" json:"temp_path,omitempty"`
-	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	StoragePath   string                 `protobuf:"bytes,2,opt,name=storage_path,json=storagePath,proto3" json:"storage_path,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -190,11 +190,11 @@ func (x *TempPathResponse) GetTempPath() string {
 	return ""
 }
 
-func (x *TempPathResponse) GetSuccess() bool {
+func (x *TempPathResponse) GetStoragePath() string {
 	if x != nil {
-		return x.Success
+		return x.StoragePath
 	}
-	return false
+	return ""
 }
 
 var File_files_proto protoreflect.FileDescriptor
@@ -206,10 +206,10 @@ const file_files_proto_rawDesc = "" +
 	"\fstorage_path\x18\x01 \x01(\tR\vstoragePath\"\x11\n" +
 	"\x0fDelFileResponse\"%\n" +
 	"\x0fTempPathReqeust\x12\x12\n" +
-	"\x04info\x18\x01 \x01(\tR\x04info\"I\n" +
+	"\x04info\x18\x01 \x01(\tR\x04info\"R\n" +
 	"\x10TempPathResponse\x12\x1b\n" +
-	"\ttemp_path\x18\x01 \x01(\tR\btempPath\x12\x18\n" +
-	"\asuccess\x18\x02 \x01(\bR\asuccess2\x83\x01\n" +
+	"\ttemp_path\x18\x01 \x01(\tR\btempPath\x12!\n" +
+	"\fstorage_path\x18\x02 \x01(\tR\vstoragePath2\x83\x01\n" +
 	"\fFilesService\x124\n" +
 	"\x03Del\x12\x15.files.DelFileRequest\x1a\x16.files.DelFileResponse\x12=\n" +
 	"\bTempPath\x12\x16.files.TempPathReqeust\x1a\x17.files.TempPathResponse0\x01B\x03Z\x01.b\x06proto3"

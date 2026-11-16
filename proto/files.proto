@@ -16,7 +16,7 @@ message TempPathReqeust {
 
 message TempPathResponse {
   string temp_path = 1;
-  bool success = 2;
+  string storage_path = 2;
 }
 
 service FilesService {

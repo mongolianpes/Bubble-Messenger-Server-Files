@@ -14,7 +14,8 @@ import (
 )
 
 type FilesRequest struct {
-	File []byte
+	File          []byte
+	ReceiverLogin string
 }
 
 type UploaderService struct {
@@ -59,7 +60,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 	case "save_avatar", "save_file":
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
-			s.notifyWaiter(r.URL.Path, err)
+			s.notifyWaiter(r.URL.Path, "", err)
 
 			slog.Error("Error read request body", "error", err)
 			w.Write([]byte("Error read request body"))
@@ -68,7 +69,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 		req := &FilesRequest{}
 		if err = json.Unmarshal(body, &req); err != nil {
-			s.notifyWaiter(r.URL.Path, err)
+			s.notifyWaiter(r.URL.Path, "", err)
 
 			w.Write([]byte("Error unmarshal request body"))
 			return
@@ -79,16 +80,16 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 			saveAvatar = true
 		}
 
-		storagePath, err = s.Storage.SaveFile(req.File, saveAvatar)
+		storagePath, err = s.Storage.SaveFile(req.File, req.ReceiverLogin, saveAvatar)
 		if err != nil {
-			s.notifyWaiter(r.URL.Path, err)
+			s.notifyWaiter(r.URL.Path, "", err)
 
 			slog.Error("Error save file", "error", err)
 			w.Write([]byte("Error save file"))
 			return
 		}
 
-		s.notifyWaiter(r.URL.Path, nil)
+		s.notifyWaiter(r.URL.Path, storagePath, nil)
 
 		w.WriteHeader(http.StatusOK)
 		return
@@ -105,7 +106,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *UploaderService) notifyWaiter(tempPath string, err error) {
+func (s *UploaderService) notifyWaiter(tempPath string, storagePath string, err error) {
 	s.waiters.Mu.Lock()
 	ch, ok := s.waiters.Waiters[tempPath]
 	s.waiters.Mu.Unlock()
@@ -114,8 +115,8 @@ func (s *UploaderService) notifyWaiter(tempPath string, err error) {
 		return
 	}
 
-	select {
-	case ch <- err:
-	default:
+	ch <- waiter.WaiterInfo{
+		Path: storagePath,
+		Err:  err,
 	}
 }

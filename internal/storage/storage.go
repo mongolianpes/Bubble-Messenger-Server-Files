@@ -25,7 +25,7 @@ type File struct {
 }
 
 type Storage interface {
-	SaveFile(fileData []byte, saveAvatar bool) (string, error)
+	SaveFile(fileData []byte, receiverLogin string, saveForever bool) (string, error)
 	DelFile(storagePath string) error
 	GetFile(storagePath string) ([]byte, error)
 }
@@ -43,7 +43,7 @@ func NewStorage(storagePath string) *File {
 func (s *File) usersDir() string   { return filepath.Join(s.storagePath, TimeToLiveFilesDirPath) }
 func (s *File) avatarsDir() string { return filepath.Join(s.storagePath, ForeversDirPath) }
 
-func (s *File) SaveFile(fileData []byte, saveForever bool) (string, error) {
+func (s *File) SaveFile(fileData []byte, receiverLogin string, saveForever bool) (string, error) {
 	time := time.Now()
 
 	fileDirPathToSave := s.usersDir()
@@ -58,6 +58,9 @@ func (s *File) SaveFile(fileData []byte, saveForever bool) (string, error) {
 	}
 
 	filepath := filepathDir + uuid.New().String()
+	if !saveForever {
+		filepath += "." + receiverLogin
+	}
 	if err := os.WriteFile(filepath, fileData, codeAccessFile); err != nil {
 		return "", err
 	}

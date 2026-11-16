@@ -6,11 +6,16 @@ import (
 
 type WaiterService struct {
 	Mu      sync.Mutex
-	Waiters map[string]chan error
+	Waiters map[string]chan WaiterInfo
+}
+
+type WaiterInfo struct {
+	Path string
+	Err  error
 }
 
 func NewWaiterService() *WaiterService {
 	return &WaiterService{
-		Waiters: make(map[string]chan error),
+		Waiters: make(map[string]chan WaiterInfo),
 	}
 }
