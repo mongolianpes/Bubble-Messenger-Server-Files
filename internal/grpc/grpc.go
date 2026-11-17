@@ -16,6 +16,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	saveAvatar = "save_avatar"
+	saveFile   = "save_file"
+)
+
 type GRPCService struct {
 	pb.UnimplementedFilesServiceServer
 	file    storage.Storage
@@ -27,10 +32,11 @@ type GRPCServiceStarter interface {
 	Start()
 }
 
-func NewSaveFilesService(storage storage.Storage, usedTempPaths map[string]struct{}) *GRPCService {
+func NewSaveFilesService(storage storage.Storage, temp rdb.TempSetter, waiters *waiter.WaiterService) *GRPCService {
 	return &GRPCService{
 		file:    storage,
-		waiters: waiter.NewWaiterService(),
+		temp:    temp,
+		waiters: waiters,
 	}
 }
 
@@ -43,7 +49,7 @@ func (s *GRPCService) Del(ctx context.Context, req *pb.DelFileRequest) (*pb.DelF
 	return &pb.DelFileResponse{}, nil
 }
 
-func (s *GRPCService) GenerateTempPath(req *pb.TempPathReqeust, stream pb.FilesService_TempPathServer) error {
+func (s *GRPCService) TempPath(req *pb.TempPathReqeust, stream pb.FilesService_TempPathServer) error {
 	ctx := stream.Context()
 
 	b := make([]byte, 32)
@@ -51,21 +57,29 @@ func (s *GRPCService) GenerateTempPath(req *pb.TempPathReqeust, stream pb.FilesS
 		return err
 	}
 
-	tempPath := base64.RawURLEncoding.EncodeToString(b)
+	tempPath := "/" + base64.RawURLEncoding.EncodeToString(b)
 
-	if err := s.temp.SetTempPath(ctx, tempPath, req.Info); err != nil {
+	switch req.Info {
+	case saveAvatar, saveFile:
+	default:
+		if !s.file.Exist(req.Info) {
+			return fmt.Errorf("File %s not exist", req.Info)
+		}
+	}
+
+	if err := s.temp.SetStoragePath(ctx, tempPath, req.Info); err != nil {
 		slog.ErrorContext(ctx, "Cant save temp path", "info", req.Info, "error", err)
 		return err
 	}
 
 	switch req.Info {
 	case "save_avatar", "save_file":
+	default:
 		if err := stream.Send(&pb.TempPathResponse{TempPath: tempPath}); err != nil {
 			return err
 		}
 
 		return nil
-	default:
 	}
 
 	ch := make(chan waiter.WaiterInfo, 1)
@@ -89,10 +103,14 @@ func (s *GRPCService) GenerateTempPath(req *pb.TempPathReqeust, stream pb.FilesS
 		if status.Err != nil {
 			return status.Err
 		}
-		return stream.Send(&pb.TempPathResponse{StoragePath: status.Path})
+		if err := stream.Send(&pb.TempPathResponse{StoragePath: status.Path}); err != nil {
+			return err
+		}
 	case <-ctx.Done():
 		return fmt.Errorf("Ошибка использования канала")
 	}
+
+	return nil
 }
 
 func (s *GRPCService) Start() {

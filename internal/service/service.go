@@ -1,12 +1,14 @@
 package service
 
 import (
+	"log/slog"
 	"time"
 
 	"files/internal/grpc"
 	"files/internal/rdb"
 	"files/internal/storage"
 	"files/internal/uploader"
+	"files/internal/waiter"
 )
 
 const filesDirPath = "storage/"
@@ -18,11 +20,14 @@ type FilesService struct {
 }
 
 func NewFilesService() *FilesService {
-	usedTempPaths := make(map[string]struct{})
 	filesStorage := storage.NewStorage(filesDirPath)
-	grpcService := grpc.NewSaveFilesService(filesStorage, usedTempPaths)
-	temp, _ := rdb.NewRedisStorage()
-	uploaderService := uploader.NewUploaderService(temp, filesStorage, usedTempPaths)
+	temp, err := rdb.NewRedisStorage()
+	if err != nil {
+		slog.Error("Failed to start Redis storage", "error", err)
+	}
+	waiters := waiter.NewWaiterService()
+	grpcService := grpc.NewSaveFilesService(filesStorage, temp, waiters)
+	uploaderService := uploader.NewUploaderService(temp, filesStorage, waiters)
 	return &FilesService{
 		uploader:    uploaderService,
 		grpcService: grpcService,

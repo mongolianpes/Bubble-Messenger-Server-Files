@@ -13,7 +13,7 @@ type RedisStorage struct {
 }
 
 type TempSetter interface {
-	SetTempPath(ctx context.Context, tempPath, storagePath string) error
+	SetStoragePath(ctx context.Context, tempPath, storagePath string) error
 	Close() error
 }
 

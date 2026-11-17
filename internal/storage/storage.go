@@ -28,6 +28,7 @@ type Storage interface {
 	SaveFile(fileData []byte, receiverLogin string, saveForever bool) (string, error)
 	DelFile(storagePath string) error
 	GetFile(storagePath string) ([]byte, error)
+	Exist(storagePath string) bool
 }
 
 type Cleaner interface {
@@ -70,6 +71,14 @@ func (s *File) SaveFile(fileData []byte, receiverLogin string, saveForever bool)
 
 func (s *File) DelFile(storagePath string) error {
 	return os.Remove(storagePath)
+}
+
+func (s *File) Exist(storagePath string) bool {
+	_, err := os.Stat(storagePath)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func (s *File) GetFile(storagePath string) ([]byte, error) {

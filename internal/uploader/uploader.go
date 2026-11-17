@@ -28,11 +28,11 @@ type Uploader interface {
 	StartFilesHTTPServer(port, storagePath string)
 }
 
-func NewUploaderService(temp rdb.TempGetter, storage storage.Storage, usedTempPaths map[string]struct{}) *UploaderService {
+func NewUploaderService(temp rdb.TempGetter, storage storage.Storage, waiters *waiter.WaiterService) *UploaderService {
 	return &UploaderService{
 		Temp:    temp,
 		Storage: storage,
-		waiters: waiter.NewWaiterService(),
+		waiters: waiters,
 	}
 }
 
@@ -51,7 +51,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 
 	storagePath, err := s.Temp.GetStoragePath(ctx, r.URL.Path)
 	if err != nil {
-		slog.Error("Error get storage path", "error", err)
+		slog.Error("Error get storage path", "path", r.URL.Path, "error", err)
 		w.Write([]byte("Error get storage path"))
 		return
 	}
