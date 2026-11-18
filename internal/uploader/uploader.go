@@ -49,6 +49,28 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
+	origin := r.Header.Get("Origin")
+	// лучше whitelist, а не любой Origin
+	if origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Max-Age", "86400")
+	}
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
+
+	slog.Info("Got request",
+		"method", r.Method,
+		"path", r.URL.Path,
+		"contentLength", r.ContentLength,
+		"accessPaths", s.waiters.Waiters,
+	)
+
 	storagePath, err := s.Temp.GetStoragePath(ctx, r.URL.Path)
 	if err != nil {
 		slog.Error("Error get storage path", "path", r.URL.Path, "error", err)
@@ -71,6 +93,7 @@ func (s *UploaderService) FilesHandler(w http.ResponseWriter, r *http.Request) {
 		if err = json.Unmarshal(body, &req); err != nil {
 			s.notifyWaiter(r.URL.Path, "", err)
 
+			slog.Error("Error unmarshal request body", "error", err, "body", string(body))
 			w.Write([]byte("Error unmarshal request body"))
 			return
 		}
